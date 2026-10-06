@@ -66,7 +66,7 @@ client.on('interactionCreate', async (interaction) => {
     await interaction.reply({ content: `Rules posted in ${channel}.`, flags: MessageFlags.Ephemeral });
   } catch (err) {
     console.error('Error in /rules:', err);
-    const msg = 'I couldn't post the rules. Check that the bot can write in that channel.';
+    const msg = "I couldn't post the rules. Check that the bot can write in that channel.";
     if (interaction.replied || interaction.deferred) await interaction.followUp({ content: msg, flags: MessageFlags.Ephemeral });
     else await interaction.reply({ content: msg, flags: MessageFlags.Ephemeral });
   }
