@@ -1,0 +1,16 @@
+{
+  "name": "axiom-helper",
+  "version": "1.0.0",
+  "description": "AXIOM HELPER - bot de Discord",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js",
+    "setup-profile": "node src/setup-profile.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5"
+  }
+}
