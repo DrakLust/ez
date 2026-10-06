@@ -1,13 +1,13 @@
-// Edita aquí las reglas. Después, en Discord, usa /reglas para publicarlas.
+// Edit the rules here. Then use /rules in Discord to post them.
 module.exports = {
-  title: 'Reglas de AXIOM',
+  title: 'AXIOM Rules',
   color: 0x6fa3dc,
   rules: [
-    'Respeta a todos los miembros. Nada de insultos ni acoso.',
-    'No hagas spam ni publicites otros servidores.',
-    'Nada de contenido NSFW, ilegal o violento.',
-    'Usa cada canal para su tema.',
-    'Sigue las indicaciones del staff.',
+    'Respect every member. No insults or harassment.',
+    'No spam and no advertising other servers.',
+    'No NSFW, illegal or violent content.',
+    'Keep each channel on topic.',
+    'Follow the staff\'s instructions.',
   ],
-  footer: 'Al estar en este servidor aceptas estas reglas.',
+  footer: 'By staying in this server you accept these rules.',
 };
