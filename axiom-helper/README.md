@@ -14,3 +14,6 @@ Bot de Discord (discord.js v14). Por ahora: da el rol **Miembro** a quien entra 
    npm run setup-profile    # nombre + foto (una vez)
    npm start
    ```
+
+## Reglas
+Edita `src/rules.js` y reinicia el bot. En Discord usa `/reglas` (necesita permiso *Gestionar servidor*) para publicarlas; opcionalmente elige el canal.
