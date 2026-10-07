@@ -4,7 +4,12 @@ const {
   GatewayIntentBits,
   PermissionFlagsBits,
   SlashCommandBuilder,
-  EmbedBuilder,
+  ContainerBuilder,
+  MediaGalleryBuilder,
+  MediaGalleryItemBuilder,
+  SeparatorBuilder,
+  SeparatorSpacingSize,
+  TextDisplayBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
@@ -104,18 +109,27 @@ client.on('guildMemberAdd', async (member) => {
 async function postRules(interaction) {
   const channel = interaction.options.getChannel('channel') || interaction.channel;
 
-  const embed = new EmbedBuilder()
-    .setColor(rulesData.color)
-    .setDescription(rulesData.text);
-
   const button = new ButtonBuilder()
     .setCustomId(rulesData.buttonId)
     .setLabel(rulesData.buttonLabel)
     .setStyle(ButtonStyle.Success);
 
+  const card = new ContainerBuilder()
+    .setAccentColor(rulesData.color)
+    .addMediaGalleryComponents(
+      new MediaGalleryBuilder().addItems(new MediaGalleryItemBuilder().setURL('attachment://rules-banner.png'))
+    )
+    .addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small))
+    .addTextDisplayComponents(new TextDisplayBuilder().setContent(rulesData.text))
+    .addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small))
+    .addActionRowComponents(new ActionRowBuilder().addComponents(button));
+
   try {
-    await channel.send({ files: [new AttachmentBuilder(bannerPath, { name: 'rules-banner.png' })] });
-    await channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(button)] });
+    await channel.send({
+      components: [card],
+      files: [new AttachmentBuilder(bannerPath, { name: 'rules-banner.png' })],
+      flags: MessageFlags.IsComponentsV2,
+    });
     await interaction.reply({ content: `Rules posted in ${channel}.`, flags: MessageFlags.Ephemeral });
   } catch (err) {
     console.error('Error in /rules:', err);
