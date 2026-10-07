@@ -5,10 +5,17 @@ const {
   PermissionFlagsBits,
   SlashCommandBuilder,
   EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  AttachmentBuilder,
   ChannelType,
   MessageFlags,
 } = require('discord.js');
+const path = require('path');
 const rulesData = require('./rules');
+
+const bannerPath = path.join(__dirname, '..', 'assets', 'rules-banner.png');
 
 const token = process.env.DISCORD_TOKEN;
 const roleName = process.env.MEMBER_ROLE_NAME || 'Member';
@@ -94,27 +101,57 @@ client.on('guildMemberAdd', async (member) => {
   }
 });
 
-client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-  if (interaction.commandName !== 'rules') return;
-
+async function postRules(interaction) {
   const channel = interaction.options.getChannel('channel') || interaction.channel;
 
   const embed = new EmbedBuilder()
-    .setTitle(rulesData.title)
     .setColor(rulesData.color)
-    .setDescription(rulesData.rules.map((rule, i) => `**${i + 1}.** ${rule}`).join('\n\n'))
-    .setFooter({ text: rulesData.footer });
+    .setDescription(rulesData.text);
+
+  const button = new ButtonBuilder()
+    .setCustomId(rulesData.buttonId)
+    .setLabel(rulesData.buttonLabel)
+    .setStyle(ButtonStyle.Success);
 
   try {
-    await channel.send({ embeds: [embed] });
+    await channel.send({ files: [new AttachmentBuilder(bannerPath, { name: 'rules-banner.png' })] });
+    await channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(button)] });
     await interaction.reply({ content: `Rules posted in ${channel}.`, flags: MessageFlags.Ephemeral });
   } catch (err) {
     console.error('Error in /rules:', err);
     await interaction.reply({
-      content: "I couldn't post the rules. Check that the bot can write in that channel.",
+      content: "I couldn't post the rules. Check that the bot can write and attach files in that channel.",
       flags: MessageFlags.Ephemeral,
     });
+  }
+}
+
+async function giveVerifiedRole(interaction) {
+  const member = interaction.member;
+
+  if (member.roles.cache.has(rulesData.verifiedRoleId)) {
+    return interaction.reply({ content: 'You already accepted the rules.', flags: MessageFlags.Ephemeral });
+  }
+
+  try {
+    await member.roles.add(rulesData.verifiedRoleId);
+    await interaction.reply({ content: 'Thanks! You now have access to the server.', flags: MessageFlags.Ephemeral });
+  } catch (err) {
+    console.error(`Could not give the verified role to ${member.user.tag}:`, err);
+    await interaction.reply({
+      content: 'Something went wrong, please contact a staff member.',
+      flags: MessageFlags.Ephemeral,
+    });
+  }
+}
+
+client.on('interactionCreate', async (interaction) => {
+  if (interaction.isChatInputCommand() && interaction.commandName === 'rules') {
+    return postRules(interaction);
+  }
+
+  if (interaction.isButton() && interaction.customId === rulesData.buttonId) {
+    return giveVerifiedRole(interaction);
   }
 });
 
