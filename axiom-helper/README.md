@@ -16,6 +16,4 @@ Discord bot (discord.js v14). Gives the **Member** role to everyone who joins an
    ```
 
 ## Rules
-Edit `src/rules.js` and restart the bot. In Discord use `/rules` (requires *Manage Server*) to post the banner, the rules and the "I agree to the rules" button; optionally pick the channel.
-
-Clicking the button gives the verified role set in `src/rules.js`. The bot must be online for the button to work, and its role must be above the verified role in Server Settings > Roles.
+Edit `src/rules.js` and restart the bot. In Discord use `/rules` (requires *Manage Server*) to post the banner and the rules in one card; optionally pick the channel.

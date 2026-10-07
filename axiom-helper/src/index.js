@@ -10,9 +10,6 @@ const {
   SeparatorBuilder,
   SeparatorSpacingSize,
   TextDisplayBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
   AttachmentBuilder,
   ChannelType,
   MessageFlags,
@@ -109,20 +106,13 @@ client.on('guildMemberAdd', async (member) => {
 async function postRules(interaction) {
   const channel = interaction.options.getChannel('channel') || interaction.channel;
 
-  const button = new ButtonBuilder()
-    .setCustomId(rulesData.buttonId)
-    .setLabel(rulesData.buttonLabel)
-    .setStyle(ButtonStyle.Success);
-
   const card = new ContainerBuilder()
     .setAccentColor(rulesData.color)
     .addMediaGalleryComponents(
       new MediaGalleryBuilder().addItems(new MediaGalleryItemBuilder().setURL('attachment://rules-banner.png'))
     )
     .addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small))
-    .addTextDisplayComponents(new TextDisplayBuilder().setContent(rulesData.text))
-    .addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small))
-    .addActionRowComponents(new ActionRowBuilder().addComponents(button));
+    .addTextDisplayComponents(new TextDisplayBuilder().setContent(rulesData.text));
 
   try {
     await channel.send({
@@ -140,32 +130,9 @@ async function postRules(interaction) {
   }
 }
 
-async function giveVerifiedRole(interaction) {
-  const member = interaction.member;
-
-  if (member.roles.cache.has(rulesData.verifiedRoleId)) {
-    return interaction.reply({ content: 'You already accepted the rules.', flags: MessageFlags.Ephemeral });
-  }
-
-  try {
-    await member.roles.add(rulesData.verifiedRoleId);
-    await interaction.reply({ content: 'Thanks! You now have access to the server.', flags: MessageFlags.Ephemeral });
-  } catch (err) {
-    console.error(`Could not give the verified role to ${member.user.tag}:`, err);
-    await interaction.reply({
-      content: 'Something went wrong, please contact a staff member.',
-      flags: MessageFlags.Ephemeral,
-    });
-  }
-}
-
 client.on('interactionCreate', async (interaction) => {
   if (interaction.isChatInputCommand() && interaction.commandName === 'rules') {
     return postRules(interaction);
-  }
-
-  if (interaction.isButton() && interaction.customId === rulesData.buttonId) {
-    return giveVerifiedRole(interaction);
   }
 });
 

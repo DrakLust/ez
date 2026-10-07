@@ -1,8 +1,5 @@
 module.exports = {
   color: 0x6fa3dc,
-  verifiedRoleId: '1557460697787400283',
-  buttonId: 'agree_rules',
-  buttonLabel: 'I agree to the rules',
   text: `## Discord TOS
 You must adhere to Discord's Terms of Service and Community Guidelines in addition to our rules.
 https://discord.com/terms
